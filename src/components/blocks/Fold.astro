@@ -1,0 +1,15 @@
+---
+// Collapsible block for code, proofs or details most readers can skip.
+interface Props { summary?: string; }
+const { summary = 'Show the details' } = Astro.props;
+---
+<details class="fold"><summary>{summary}</summary><div class="inner"><slot /></div></details>
+
+<style>
+  .fold { border: 1px solid var(--rule); margin: 20px 0; background: var(--surface); }
+  summary { cursor: pointer; padding: 8px 14px; font: 13px var(--mono); color: var(--ink); list-style: none; }
+  summary::before { content: '▸ '; color: var(--muted); }
+  .fold[open] summary::before { content: '▾ '; }
+  summary::-webkit-details-marker { display: none; }
+  .inner { padding: 0 14px 4px; }
+</style>

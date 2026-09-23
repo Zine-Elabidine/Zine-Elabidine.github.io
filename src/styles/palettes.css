@@ -1,0 +1,554 @@
+/* Notebook site palettes.
+ * ACTIVE: graphite (chosen 2026-09-23). The rest are kept for switching later.
+ * To switch: change the palette imported in the site stylesheet (or copy a block
+ * into the :root / dark blocks). Every palette defines the same tokens, light + dark,
+ * plus four chart colors (--chart-1 is the hero series).
+ * Graphite also sets --link-decoration: underline (its links are black).
+ */
+
+/* Ink Blue
+ * Fountain-pen blue on cool white paper. Calm, academic and a little vivid. */
+[data-palette="ink"] {
+  --paper: #fbfcfd;
+  --surface: #ffffff;
+  --ink: #1b2330;
+  --muted: #5d6b7e;
+  --accent: #1f4fa8;
+  --rule: #d3dae5;
+  --grid: rgba(31,79,168,.07);
+  --code-bg: #eef2f8;
+  --highlight: #dfe8fb;
+  --callout: #9a5b00;
+  --callout-bg: #fbf3e4;
+  --chart-1: #1f4fa8;
+  --chart-2: #d08a2e;
+  --chart-3: #3f8f7a;
+  --chart-4: #9aa3b0;
+  --link-decoration: none;
+}
+[data-palette="ink"][data-mode="dark"] {
+  --paper: #12161c;
+  --surface: #171c24;
+  --ink: #dde3ea;
+  --muted: #8b96a5;
+  --accent: #8fb4ff;
+  --rule: #28313d;
+  --grid: rgba(143,180,255,.05);
+  --code-bg: #1b2230;
+  --highlight: #223257;
+  --callout: #e0a650;
+  --callout-bg: #2a2216;
+  --chart-1: #8fb4ff;
+  --chart-2: #e6b86a;
+  --chart-3: #7cc4a4;
+  --chart-4: #6d7785;
+  --link-decoration: none;
+}
+
+/* Graphite  ← ACTIVE
+ * Almost no color: black ink, pencil greys, and links marked by an underline instead of a hue. The most professional and "printed" of the set. */
+[data-palette="graphite"] {
+  --paper: #fcfcfb;
+  --surface: #ffffff;
+  --ink: #141414;
+  --muted: #666666;
+  --accent: #141414;
+  --rule: #dcdcd8;
+  --grid: rgba(0,0,0,.05);
+  --code-bg: #f1f1ef;
+  --highlight: #ecece6;
+  --callout: #141414;
+  --callout-bg: #f1f1ef;
+  --chart-1: #141414;
+  --chart-2: #8a6d3b;
+  --chart-3: #5b7083;
+  --chart-4: #b5b5b0;
+  --link-decoration: underline;
+}
+[data-palette="graphite"][data-mode="dark"] {
+  --paper: #121212;
+  --surface: #181818;
+  --ink: #e8e8e6;
+  --muted: #9a9a96;
+  --accent: #f2f2f0;
+  --rule: #2c2c2a;
+  --grid: rgba(255,255,255,.04);
+  --code-bg: #1c1c1b;
+  --highlight: #2e2e2c;
+  --callout: #e8e8e6;
+  --callout-bg: #1f1f1e;
+  --chart-1: #f2f2f0;
+  --chart-2: #c9a66b;
+  --chart-3: #8fa5b8;
+  --chart-4: #5a5a57;
+  --link-decoration: underline;
+}
+
+/* Teal & Saffron
+ * The Zellige colors, toned down: teal for links, saffron for highlights and callouts. A quiet nod to Morocco. */
+[data-palette="teal"] {
+  --paper: #f9faf9;
+  --surface: #ffffff;
+  --ink: #1b2628;
+  --muted: #5b6a6c;
+  --accent: #155e63;
+  --rule: #d5dddc;
+  --grid: rgba(21,94,99,.07);
+  --code-bg: #edf2f2;
+  --highlight: #f6e7c8;
+  --callout: #9a6a12;
+  --callout-bg: #faf1dd;
+  --chart-1: #155e63;
+  --chart-2: #c8902d;
+  --chart-3: #8a4b5c;
+  --chart-4: #b2c0c0;
+  --link-decoration: none;
+}
+[data-palette="teal"][data-mode="dark"] {
+  --paper: #101617;
+  --surface: #151d1e;
+  --ink: #dde7e7;
+  --muted: #8a9b9c;
+  --accent: #6cc4c9;
+  --rule: #243233;
+  --grid: rgba(108,196,201,.05);
+  --code-bg: #172223;
+  --highlight: #3d321a;
+  --callout: #e6b35a;
+  --callout-bg: #272216;
+  --chart-1: #6cc4c9;
+  --chart-2: #e6b35a;
+  --chart-3: #d49aa9;
+  --chart-4: #4f6263;
+  --link-decoration: none;
+}
+
+/* Majorelle
+ * The deep cobalt-violet of the Jardin Majorelle, with saffron-yellow highlights. More personality than Ink Blue, still a blue. */
+[data-palette="majorelle"] {
+  --paper: #fafaff;
+  --surface: #ffffff;
+  --ink: #1a1b2e;
+  --muted: #5e6078;
+  --accent: #3b3fb8;
+  --rule: #dcdcee;
+  --grid: rgba(59,63,184,.07);
+  --code-bg: #eeeefa;
+  --highlight: #fbeab0;
+  --callout: #9a6a12;
+  --callout-bg: #fbf3dc;
+  --chart-1: #3b3fb8;
+  --chart-2: #e0a82e;
+  --chart-3: #2f8a78;
+  --chart-4: #b5b7cf;
+  --link-decoration: none;
+}
+[data-palette="majorelle"][data-mode="dark"] {
+  --paper: #121327;
+  --surface: #181a33;
+  --ink: #e3e4f5;
+  --muted: #9698b8;
+  --accent: #a9abff;
+  --rule: #2a2c4f;
+  --grid: rgba(169,171,255,.06);
+  --code-bg: #1c1e3a;
+  --highlight: #4a3e17;
+  --callout: #f0c060;
+  --callout-bg: #2a2616;
+  --chart-1: #a9abff;
+  --chart-2: #f0c060;
+  --chart-3: #7fd0bd;
+  --chart-4: #4f5277;
+  --link-decoration: none;
+}
+
+/* Chefchaouen
+ * The blue city: a brighter sky blue on faintly blue paper, with marigold for highlights. Lighter and friendlier than Ink Blue. */
+[data-palette="chefchaouen"] {
+  --paper: #f7fafd;
+  --surface: #ffffff;
+  --ink: #132033;
+  --muted: #56657a;
+  --accent: #1f6fb8;
+  --rule: #d3dfec;
+  --grid: rgba(31,111,184,.08);
+  --code-bg: #e8f1fa;
+  --highlight: #fbe7c2;
+  --callout: #8a5a00;
+  --callout-bg: #f9f0de;
+  --chart-1: #1f6fb8;
+  --chart-2: #e39b2d;
+  --chart-3: #6b8e3a;
+  --chart-4: #aebfd2;
+  --link-decoration: none;
+}
+[data-palette="chefchaouen"][data-mode="dark"] {
+  --paper: #0e1724;
+  --surface: #132030;
+  --ink: #e0e9f4;
+  --muted: #91a2b8;
+  --accent: #86bff5;
+  --rule: #223349;
+  --grid: rgba(134,191,245,.06);
+  --code-bg: #152335;
+  --highlight: #3d3217;
+  --callout: #f0c060;
+  --callout-bg: #2a2616;
+  --chart-1: #86bff5;
+  --chart-2: #f0c060;
+  --chart-3: #b0d07a;
+  --chart-4: #445670;
+  --link-decoration: none;
+}
+
+/* Petrol & Copper
+ * A cousin of Teal & Saffron: deep petrol blue for links, copper for highlights and callouts. A bit more industrial. */
+[data-palette="petrol"] {
+  --paper: #f9fafa;
+  --surface: #ffffff;
+  --ink: #172326;
+  --muted: #5a696d;
+  --accent: #0e5569;
+  --rule: #d5dcde;
+  --grid: rgba(14,85,105,.07);
+  --code-bg: #edf2f3;
+  --highlight: #f6dfcd;
+  --callout: #a4541d;
+  --callout-bg: #fbeee4;
+  --chart-1: #0e5569;
+  --chart-2: #b8652a;
+  --chart-3: #7a9a3a;
+  --chart-4: #b3bfc2;
+  --link-decoration: none;
+}
+[data-palette="petrol"][data-mode="dark"] {
+  --paper: #0f1618;
+  --surface: #141d20;
+  --ink: #dce6e8;
+  --muted: #8a9a9e;
+  --accent: #6fc0d6;
+  --rule: #233236;
+  --grid: rgba(111,192,214,.05);
+  --code-bg: #172225;
+  --highlight: #43301f;
+  --callout: #e89a62;
+  --callout-bg: #2a2019;
+  --chart-1: #6fc0d6;
+  --chart-2: #e89a62;
+  --chart-3: #b4d06e;
+  --chart-4: #4b5b5f;
+  --link-decoration: none;
+}
+
+/* Navy & Brass
+ * Navy text instead of black, with brass links and highlights. Graphite's seriousness, a bit warmer. */
+[data-palette="navy"] {
+  --paper: #fbfbfa;
+  --surface: #ffffff;
+  --ink: #14213d;
+  --muted: #58617a;
+  --accent: #80600f;
+  --rule: #dadde3;
+  --grid: rgba(20,33,61,.06);
+  --code-bg: #eff1f5;
+  --highlight: #f3e6c4;
+  --callout: #80600f;
+  --callout-bg: #f8f1de;
+  --chart-1: #14213d;
+  --chart-2: #b88a2a;
+  --chart-3: #4f7cae;
+  --chart-4: #b9bfcb;
+  --link-decoration: none;
+}
+[data-palette="navy"][data-mode="dark"] {
+  --paper: #0d1424;
+  --surface: #121a2d;
+  --ink: #e2e6ef;
+  --muted: #949cb0;
+  --accent: #e0bb6a;
+  --rule: #252f47;
+  --grid: rgba(224,187,106,.05);
+  --code-bg: #151e33;
+  --highlight: #3b3219;
+  --callout: #e0bb6a;
+  --callout-bg: #252217;
+  --chart-1: #e2e6ef;
+  --chart-2: #e0bb6a;
+  --chart-3: #8fb4e6;
+  --chart-4: #4a5268;
+  --link-decoration: none;
+}
+
+/* Slate & Rose
+ * Cool slate greys with a deep rose accent. Graphite's calm with one clear, unexpected color. */
+[data-palette="slate-rose"] {
+  --paper: #fafafb;
+  --surface: #ffffff;
+  --ink: #1d2127;
+  --muted: #616875;
+  --accent: #a8325e;
+  --rule: #dcdee3;
+  --grid: rgba(29,33,39,.05);
+  --code-bg: #f0f1f3;
+  --highlight: #f7dde6;
+  --callout: #a8325e;
+  --callout-bg: #f9ebf0;
+  --chart-1: #a8325e;
+  --chart-2: #4a6a8a;
+  --chart-3: #c49a3a;
+  --chart-4: #b8bcc4;
+  --link-decoration: none;
+}
+[data-palette="slate-rose"][data-mode="dark"] {
+  --paper: #131519;
+  --surface: #191c21;
+  --ink: #e6e8ec;
+  --muted: #99a0ab;
+  --accent: #f08fb2;
+  --rule: #2b2f36;
+  --grid: rgba(255,255,255,.035);
+  --code-bg: #1d2026;
+  --highlight: #432333;
+  --callout: #f08fb2;
+  --callout-bg: #2a1b22;
+  --chart-1: #f08fb2;
+  --chart-2: #8fb0d0;
+  --chart-3: #e0c070;
+  --chart-4: #555a63;
+  --link-decoration: none;
+}
+
+/* Atlas Olive
+ * Olive green on faintly warm paper, like olive groves in the Atlas foothills. Earthy but crisp. */
+[data-palette="olive"] {
+  --paper: #fafaf7;
+  --surface: #ffffff;
+  --ink: #1e2118;
+  --muted: #63675a;
+  --accent: #56661c;
+  --rule: #dcdfd3;
+  --grid: rgba(86,102,28,.07);
+  --code-bg: #f0f2ea;
+  --highlight: #e9eecb;
+  --callout: #8a5a00;
+  --callout-bg: #f7f1e2;
+  --chart-1: #56661c;
+  --chart-2: #b8742a;
+  --chart-3: #4f6f8f;
+  --chart-4: #bfc2b5;
+  --link-decoration: none;
+}
+[data-palette="olive"][data-mode="dark"] {
+  --paper: #13150f;
+  --surface: #191c14;
+  --ink: #e4e7dc;
+  --muted: #9a9f8e;
+  --accent: #c2d67a;
+  --rule: #2c3024;
+  --grid: rgba(194,214,122,.05);
+  --code-bg: #1d2017;
+  --highlight: #343d1a;
+  --callout: #e0b060;
+  --callout-bg: #28241a;
+  --chart-1: #c2d67a;
+  --chart-2: #e6a86a;
+  --chart-3: #9ab8d6;
+  --chart-4: #555a4a;
+  --link-decoration: none;
+}
+
+/* Oxblood
+ * Deep red on neutral grey paper, like a marked-up printout. Serious, with more personality than blue. */
+[data-palette="oxblood"] {
+  --paper: #f8f8f7;
+  --surface: #ffffff;
+  --ink: #1e1b1c;
+  --muted: #6b6466;
+  --accent: #8c1d2e;
+  --rule: #dedad9;
+  --grid: rgba(140,29,46,.06);
+  --code-bg: #f0eeee;
+  --highlight: #f6e1e4;
+  --callout: #8c1d2e;
+  --callout-bg: #f7ebed;
+  --chart-1: #8c1d2e;
+  --chart-2: #c28a3a;
+  --chart-3: #4d6b7a;
+  --chart-4: #b8b0b2;
+  --link-decoration: none;
+}
+[data-palette="oxblood"][data-mode="dark"] {
+  --paper: #151314;
+  --surface: #1b1819;
+  --ink: #ebe6e7;
+  --muted: #a0979a;
+  --accent: #f08a9a;
+  --rule: #332d2f;
+  --grid: rgba(240,138,154,.05);
+  --code-bg: #211d1e;
+  --highlight: #40232a;
+  --callout: #f08a9a;
+  --callout-bg: #2a1a1e;
+  --chart-1: #f08a9a;
+  --chart-2: #e0b060;
+  --chart-3: #8fb0c0;
+  --chart-4: #5f5759;
+  --link-decoration: none;
+}
+
+/* Lab Green
+ * Dark green like an old lab logbook, on faintly green-tinted paper. Quiet and a little unusual. */
+[data-palette="forest"] {
+  --paper: #f8faf8;
+  --surface: #ffffff;
+  --ink: #18221d;
+  --muted: #5a6b62;
+  --accent: #1d6b4a;
+  --rule: #d4ded8;
+  --grid: rgba(29,107,74,.07);
+  --code-bg: #edf3ef;
+  --highlight: #dcefe4;
+  --callout: #8a5a00;
+  --callout-bg: #f7f1e2;
+  --chart-1: #1d6b4a;
+  --chart-2: #b3812a;
+  --chart-3: #5b6fa0;
+  --chart-4: #b4c0b9;
+  --link-decoration: none;
+}
+[data-palette="forest"][data-mode="dark"] {
+  --paper: #111613;
+  --surface: #161c18;
+  --ink: #dde6e0;
+  --muted: #8a9a90;
+  --accent: #7fcfa6;
+  --rule: #26322b;
+  --grid: rgba(127,207,166,.05);
+  --code-bg: #19211c;
+  --highlight: #1f3a2c;
+  --callout: #e0b060;
+  --callout-bg: #28241a;
+  --chart-1: #7fcfa6;
+  --chart-2: #e0b060;
+  --chart-3: #9db0e0;
+  --chart-4: #56625b;
+  --link-decoration: none;
+}
+
+/* Blueprint
+ * The grid gets louder: pale blue paper, cobalt lines and accent. The most "engineering" of the set. */
+[data-palette="blueprint"] {
+  --paper: #f2f6fc;
+  --surface: #fbfdff;
+  --ink: #122036;
+  --muted: #4f6280;
+  --accent: #0b4fd6;
+  --rule: #c9d7ee;
+  --grid: rgba(11,79,214,.12);
+  --code-bg: #e4ecf9;
+  --highlight: #d4e2fb;
+  --callout: #9a5b00;
+  --callout-bg: #fbf1df;
+  --chart-1: #0b4fd6;
+  --chart-2: #e08a1e;
+  --chart-3: #12906f;
+  --chart-4: #9fb2d3;
+  --link-decoration: none;
+}
+[data-palette="blueprint"][data-mode="dark"] {
+  --paper: #0c1a33;
+  --surface: #10213f;
+  --ink: #e3ecfb;
+  --muted: #9db1d3;
+  --accent: #9cc2ff;
+  --rule: #233a63;
+  --grid: rgba(156,194,255,.10);
+  --code-bg: #132850;
+  --highlight: #1d3a73;
+  --callout: #ffc46b;
+  --callout-bg: #2a2a2e;
+  --chart-1: #9cc2ff;
+  --chart-2: #ffc46b;
+  --chart-3: #6fd6b6;
+  --chart-4: #4a5f86;
+  --link-decoration: none;
+}
+
+/* Plum
+ * A muted violet accent. It stands out from the sea of blue developer blogs without shouting. */
+[data-palette="plum"] {
+  --paper: #faf9fb;
+  --surface: #ffffff;
+  --ink: #1f1a24;
+  --muted: #6a6273;
+  --accent: #5b2d86;
+  --rule: #dcd7e2;
+  --grid: rgba(91,45,134,.06);
+  --code-bg: #f1eef4;
+  --highlight: #ebe1f5;
+  --callout: #8a5a00;
+  --callout-bg: #f7f1e2;
+  --chart-1: #5b2d86;
+  --chart-2: #c07a2c;
+  --chart-3: #2f7f7a;
+  --chart-4: #b9b0c3;
+  --link-decoration: none;
+}
+[data-palette="plum"][data-mode="dark"] {
+  --paper: #141217;
+  --surface: #1a171e;
+  --ink: #e8e4ed;
+  --muted: #9d94a8;
+  --accent: #c7a4ee;
+  --rule: #2f2a36;
+  --grid: rgba(199,164,238,.05);
+  --code-bg: #1f1b25;
+  --highlight: #352a47;
+  --callout: #e0b060;
+  --callout-bg: #28241a;
+  --chart-1: #c7a4ee;
+  --chart-2: #e6b35a;
+  --chart-3: #7fcbc4;
+  --chart-4: #5d5566;
+  --link-decoration: none;
+}
+
+/* Graphite & Amber
+ * Graphite everywhere, plus one amber accent for highlights and numbers only. Stark, with a single spark. */
+[data-palette="mono-amber"] {
+  --paper: #fbfbfa;
+  --surface: #ffffff;
+  --ink: #161616;
+  --muted: #666462;
+  --accent: #a35a00;
+  --rule: #dddbd7;
+  --grid: rgba(0,0,0,.05);
+  --code-bg: #f1f0ee;
+  --highlight: #fbe8c7;
+  --callout: #a35a00;
+  --callout-bg: #faf0e0;
+  --chart-1: #a35a00;
+  --chart-2: #161616;
+  --chart-3: #6f8aa0;
+  --chart-4: #bdbab4;
+  --link-decoration: none;
+}
+[data-palette="mono-amber"][data-mode="dark"] {
+  --paper: #131312;
+  --surface: #191918;
+  --ink: #e9e8e5;
+  --muted: #9b9994;
+  --accent: #f0b454;
+  --rule: #2d2c2a;
+  --grid: rgba(255,255,255,.04);
+  --code-bg: #1d1d1b;
+  --highlight: #3a2e18;
+  --callout: #f0b454;
+  --callout-bg: #262116;
+  --chart-1: #f0b454;
+  --chart-2: #e9e8e5;
+  --chart-3: #9fb4c6;
+  --chart-4: #57554f;
+  --link-decoration: none;
+}
+

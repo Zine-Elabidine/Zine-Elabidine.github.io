@@ -1,0 +1,28 @@
+---
+import { fmtDate, type Post } from '../lib/posts';
+interface Props { posts: Post[]; }
+const { posts } = Astro.props;
+---
+<ul class="posts">
+  {posts.map((p) => (
+    <li>
+      <span class="d mono">{fmtDate(p.data.date)}</span>
+      <div>
+        <a class="t" href={`/writing/${p.id}/`}>{p.data.title}</a>
+        {p.data.draft && <span class="draft mono">draft</span>}
+        <p>{p.data.summary}</p>
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .posts { list-style: none; margin: 0; padding: 0; }
+  li { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 11px 0; border-top: 1px dashed var(--rule); }
+  .d { font-size: 12px; line-height: 2; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .t { font-size: 17.5px; font-weight: 600; line-height: 1.35; color: var(--ink); text-decoration: none; }
+  .t:hover { text-decoration: underline; }
+  p { margin: 2px 0 0; font-size: 15.5px; color: var(--muted); }
+  .draft { font-size: 11px; color: var(--muted); border: 1px solid var(--rule); padding: 0 5px; margin-left: 6px; vertical-align: 2px; }
+  @media (max-width: 560px) { li { grid-template-columns: 1fr; gap: 0; } }
+</style>

@@ -1,0 +1,18 @@
+---
+// Numbered sidenote. Sits in the right margin on wide screens, inline under the text on narrow ones.
+// Usage: some claim<Sidenote>BIRD dev, n = 1534.</Sidenote> continues.
+---
+<span class="sn"><sup class="ref"></sup><span class="note"><slot /></span></span>
+
+<style>
+  .sn { counter-increment: sidenote; }
+  .ref::after { content: counter(sidenote); font: 600 11px var(--mono); color: var(--accent); margin-left: 1px; }
+  .note {
+    display: block; float: right; clear: right; width: 200px; margin: 4px -264px 12px 0;
+    font: 12px/1.5 var(--mono); color: var(--muted); border-left: 2px solid var(--accent); padding-left: 10px;
+  }
+  .note::before { content: counter(sidenote) ' '; color: var(--accent); font-weight: 600; }
+  @media (max-width: 1240px) {
+    .note { float: none; width: auto; margin: 8px 0 12px; }
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+// Horizontal bar chart rendered at build time. Optional `filters` add toggle buttons
+// that show only rows tagged with that filter (a few lines of JS, nothing else).
+interface Row { label: string; value: number; tags?: string[]; }
+interface Props {
+  rows: Row[];
+  title?: string;
+  caption?: string;
+  highlight?: string[];
+  filters?: { id: string; label: string }[];
+  digits?: number;
+}
+const { rows, title = 'Chart', caption, highlight = [], filters = [], digits = 1 } = Astro.props;
+const max = Math.max(...rows.map((r) => r.value)) * 1.06;
+---
+<figure class="block bar-chart">
+  <div class="block-head">
+    <span>{title}</span>
+    {filters.length > 0 && (
+      <span class="seg" role="group" aria-label="Filter rows">
+        <button type="button" aria-pressed="true" data-f="all">all</button>
+        {filters.map((f) => <button type="button" aria-pressed="false" data-f={f.id}>{f.label}</button>)}
+      </span>
+    )}
+  </div>
+  <div class="block-body rows">
+    {rows.map((r) => (
+      <div class={`row ${highlight.includes(r.label) ? 'hi' : ''}`} data-tags={(r.tags ?? []).join(' ')}>
+        <span class="l">{r.label}</span>
+        <span class="t"><span style={`width:${(r.value / max) * 100}%`}></span></span>
+        <span class="v">{r.value.toFixed(digits)}</span>
+      </div>
+    ))}
+  </div>
+  {caption && <figcaption class="block-cap">{caption}</figcaption>}
+</figure>
+
+<style>
+  .rows { display: grid; gap: 8px; }
+  .row { display: grid; grid-template-columns: minmax(120px, 200px) 1fr 46px; gap: 10px; align-items: center; font: 12.5px var(--mono); }
+  .row[hidden] { display: none; }
+  .t { height: 14px; background: var(--code-bg); }
+  .t span { display: block; height: 100%; background: var(--chart-4); }
+  .row.hi .t span { background: var(--chart-1); }
+  .v { text-align: right; font-variant-numeric: tabular-nums; }
+  .seg { display: inline-flex; border: 1px solid var(--rule); text-transform: none; letter-spacing: 0; }
+  .seg button { font: 11px var(--mono); background: none; border: 0; padding: 3px 8px; color: var(--muted); cursor: pointer; }
+  .seg button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+  @media (max-width: 520px) { .row { grid-template-columns: 1fr 42px; } .l { grid-column: 1 / -1; } }
+</style>
+
+<script>
+  for (const fig of document.querySelectorAll<HTMLElement>('.bar-chart')) {
+    const btns = [...fig.querySelectorAll<HTMLButtonElement>('.seg button')];
+    btns.forEach((b) =>
+      b.addEventListener('click', () => {
+        btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        fig.querySelectorAll<HTMLElement>('.row').forEach((r) => {
+          r.hidden = b.dataset.f !== 'all' && !r.dataset.tags!.split(' ').includes(b.dataset.f!);
+        });
+      }),
+    );
+  }
+</script>

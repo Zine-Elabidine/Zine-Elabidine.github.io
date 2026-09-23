@@ -1,0 +1,58 @@
+---
+// Left-margin table of contents that fills as the reader scrolls. Built from the post's h2s.
+interface Props { headings: { depth: number; slug: string; text: string }[]; }
+const sections = Astro.props.headings.filter((h) => h.depth === 2);
+---
+{sections.length > 1 && (
+  <nav class="ruler" aria-label="Sections">
+    <div class="track"><div class="fill"></div></div>
+    <ol>
+      {sections.map((s) => (
+        <li><a href={`#${s.slug}`} data-slug={s.slug}><i></i><span>{s.text}</span></a></li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .ruler { position: sticky; top: 0; height: 100vh; width: 230px; justify-self: end; margin-right: 24px; font: 12px/1.3 var(--mono); }
+  .track, ol { position: absolute; top: 56px; bottom: 56px; left: 24px; }
+  .track { width: 2px; background: var(--rule); }
+  .fill { width: 2px; height: 0; background: var(--accent); }
+  ol { list-style: none; margin: 0; padding: 0; right: 8px; }
+  li { position: absolute; left: -3px; right: 0; transform: translateY(-50%); }
+  a { display: flex; align-items: center; gap: 9px; color: var(--muted); text-decoration: none; }
+  a:hover span { text-decoration: underline; }
+  i { width: 8px; height: 8px; border-radius: 50%; background: var(--paper); border: 2px solid var(--rule); flex: none; }
+  .done i { border-color: var(--accent); background: var(--accent); }
+  .cur a { color: var(--ink); font-weight: 500; }
+  .cur i { border-color: var(--accent); background: var(--paper); box-shadow: 0 0 0 3px var(--rule); }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('.ruler');
+  if (nav) {
+    const fill = nav.querySelector<HTMLElement>('.fill')!;
+    const items = [...nav.querySelectorAll<HTMLLIElement>('li')];
+    const heads = items.map((li) => document.getElementById(li.querySelector('a')!.dataset.slug!)!);
+    // Ticks sit where each section starts in the document; the fill tracks the reading position.
+    const docH = () => document.documentElement.scrollHeight;
+    const maxScroll = () => Math.max(1, docH() - innerHeight);
+    const topOf = (h: HTMLElement) => h.getBoundingClientRect().top + scrollY;
+    const place = () => items.forEach((li, i) => (li.style.top = `${(topOf(heads[i]) / docH()) * 100}%`));
+    const update = () => {
+      const t = scrollY / maxScroll();
+      // Reading line moves from the top of the viewport to its bottom as you scroll, so it reaches 100% at the end.
+      const line = scrollY + innerHeight * t;
+      fill.style.height = `${(line / docH()) * 100}%`;
+      let cur = 0;
+      heads.forEach((h, i) => { if (topOf(h) <= Math.max(line, scrollY + innerHeight * 0.3)) cur = i; });
+      items.forEach((li, i) => { li.classList.toggle('done', i < cur); li.classList.toggle('cur', i === cur); });
+    };
+    const all = () => { place(); update(); };
+    addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', all);
+    document.fonts?.ready.then(all);
+    all();
+  }
+</script>
