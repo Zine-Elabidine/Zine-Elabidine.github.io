@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zine-elabidine.github.io/sitemap-index.xml
