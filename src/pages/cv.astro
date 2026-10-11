@@ -1,0 +1,115 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { cv } from '../data/cv';
+
+// **word** → <strong>word</strong>; the strings are ours, so set:html is safe here.
+const md = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+---
+<Base title="CV" description={`${site.name}, ${cv.role}: experience, projects, skills and education.`}>
+  <main class="wrap">
+    <header class="head">
+      <h1>{site.name}</h1>
+      <p class="role">{cv.role}</p>
+      <p class="links mono">
+        <a href={`mailto:${cv.email}`}>{cv.email}</a>
+        {site.links.filter((l) => l.label !== 'rss' && l.label !== 'cv').map((l) => <a href={l.href}>{l.label}</a>)}
+      </p>
+      <a class="dl mono" href={cv.pdf} download>↓ download CV (PDF)</a>
+    </header>
+
+    <section>
+      <h2 class="lbl">Experience</h2>
+      {cv.experience.map((e) => (
+        <article class="row">
+          <p class="when mono">{e.dates}</p>
+          <div>
+            <h3>{e.title} <span class="at">· {e.org}, {e.place}</span></h3>
+            {e.intro && <p class="intro" set:html={md(e.intro)} />}
+            <ul>{e.items.map((i) => <li set:html={md(i)} />)}</ul>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <section>
+      <h2 class="lbl">Selected projects <span class="note">open source</span></h2>
+      {cv.projects.map((p) => (
+        <article class="row">
+          <p class="when mono"><a href={p.href}>{p.name}</a></p>
+          <p class="what" set:html={md(p.what)} />
+        </article>
+      ))}
+    </section>
+
+    <section>
+      <h2 class="lbl">Skills</h2>
+      {cv.skills.map((s) => (
+        <div class="row">
+          <p class="when mono">{s.area}</p>
+          <p class="what">{s.list}</p>
+        </div>
+      ))}
+      <div class="row">
+        <p class="when mono">Languages</p>
+        <p class="what">{cv.languages}</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="lbl">Education</h2>
+      {cv.education.map((e) => (
+        <article class="row">
+          <p class="when mono">{e.dates}</p>
+          <div>
+            <h3>{e.title}</h3>
+            <p class="at">{e.org}, {e.place}</p>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <section>
+      <h2 class="lbl">Distinctions</h2>
+      {cv.awards.map((a) => (
+        <div class="row">
+          <p class="when mono">award</p>
+          <p class="what"><strong>{a.what}</strong> · {a.detail}</p>
+        </div>
+      ))}
+    </section>
+  </main>
+</Base>
+
+<style>
+  .wrap { max-width: 820px; margin: 0 auto; padding: 36px 20px 72px; }
+
+  .head { margin: 6px 0 8px; padding-bottom: 22px; border-bottom: 1px solid var(--ink); }
+  h1 { font-size: 38px; line-height: 1.1; margin: 0; letter-spacing: -0.01em; }
+  .role { margin: 6px 0 0; font-style: italic; color: var(--muted); font-size: 20px; }
+  .links { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 14px 0 0; font-size: 13px; }
+
+  .dl { display: inline-block; margin-top: 16px; padding: 6px 12px; font-size: 13px; color: var(--ink); text-decoration: none; border: 1px solid var(--ink); border-radius: 2px; }
+  .dl:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
+  section { margin-top: 34px; }
+  h2.lbl { margin: 0 0 6px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+  .note { letter-spacing: 0.04em; text-transform: none; font-weight: 400; margin-left: 6px; }
+
+  /* Left column = dates or names in mono, right column = the content. */
+  .row { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 20px; padding: 14px 0; border-bottom: 1px dashed var(--rule); }
+  .row:last-child { border-bottom: 0; }
+  .when { margin: 3px 0 0; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .when a { color: var(--ink); }
+  h3 { font-size: 19px; margin: 0; }
+  .at { font-weight: 400; color: var(--muted); font-size: 16px; margin: 2px 0 0; }
+  h3 .at { font-size: inherit; }
+  .intro { margin: 6px 0 0; font-style: italic; color: var(--muted); font-size: 16.5px; }
+  ul { margin: 8px 0 0; padding-left: 18px; font-size: 16.5px; }
+  li { margin-bottom: 4px; }
+  .what { margin: 0; font-size: 16.5px; }
+
+  @media (max-width: 640px) {
+    .row { grid-template-columns: 1fr; gap: 4px; }
+    h1 { font-size: 32px; }
+  }
+</style>

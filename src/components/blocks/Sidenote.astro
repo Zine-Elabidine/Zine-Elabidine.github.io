@@ -10,9 +10,10 @@
   .note {
     display: block; float: right; clear: right; width: 200px; margin: 4px -264px 12px 0;
     font: 12px/1.5 var(--mono); color: var(--muted); border-left: 2px solid var(--accent); padding-left: 10px;
+    position: relative; z-index: 2;
   }
   .note::before { content: counter(sidenote) ' '; color: var(--accent); font-weight: 600; }
-  @media (max-width: 1240px) {
+  @media (max-width: 1320px) {
     .note { float: none; width: auto; margin: 8px 0 12px; }
   }
 </style>

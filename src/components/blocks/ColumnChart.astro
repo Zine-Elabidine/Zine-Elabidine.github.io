@@ -1,0 +1,92 @@
+---
+// Vertical bars grouped by category, rendered at build time as SVG. Each bar shows its value
+// on top; optional `errors` (same shape as values) draw confidence-interval whiskers.
+// On narrow screens the chart scrolls sideways inside its frame instead of shrinking.
+interface Group { label: string; values: number[]; errors?: number[]; }
+interface Props {
+  series: string[];
+  groups: Group[];
+  max: number;
+  ticks: number[];
+  digits?: number;
+  prefix?: string;
+  unit?: string;
+  title?: string;
+  caption?: string;
+}
+const { series, groups, max, ticks, digits = 2, prefix = '', unit = '', title = 'Chart', caption } = Astro.props;
+
+const W = 640, H = 330, L = 48, R = 8, T = 24, B = 56;
+const gw = (W - L - R) / groups.length;
+const bw = Math.min(30, (gw - 18) / series.length);
+const py = (v: number) => T + (1 - v / max) * (H - T - B);
+const bx = (g: number, s: number) => L + g * gw + (gw - bw * series.length - 2 * (series.length - 1)) / 2 + s * (bw + 2);
+const fmt = (v: number) => `${prefix}${v.toFixed(digits)}${unit}`;
+const lines = (label: string) => {
+  const words = label.split(' ');
+  const out: string[] = [];
+  for (const w of words) {
+    if (out.length && (out[out.length - 1] + ' ' + w).length <= 14) out[out.length - 1] += ' ' + w;
+    else out.push(w);
+  }
+  return out;
+};
+---
+<figure class="block columns">
+  <div class="block-head"><span>{title}</span></div>
+  <div class="block-body">
+    <div class="legend">
+      {series.map((s, si) => <span><i class={`k${si + 1}`}></i>{s}</span>)}
+    </div>
+    <div class="scroll">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={title}>
+        {ticks.map((t) => (
+          <g>
+            <line class="grid" x1={L} x2={W - R} y1={py(t)} y2={py(t)} />
+            <text class="tick" x={L - 8} y={py(t) + 4} text-anchor="end">{prefix}{t}{unit}</text>
+          </g>
+        ))}
+        {groups.map((g, gi) => (
+          <g>
+            {g.values.map((v, si) => {
+              const x = bx(gi, si), e = g.errors?.[si];
+              return (
+                <g class={`b${si + 1}`}>
+                  <path d={`M${x},${py(0)} V${py(v) + 3} q0,-3 3,-3 H${x + bw - 3} q3,0 3,3 V${py(0)} Z`}>
+                    <title>{`${g.label} · ${series[si]}: ${fmt(v)}${e ? ` (±${e})` : ''}`}</title>
+                  </path>
+                  {e && <path class="err" d={`M${x + bw / 2},${py(v + e)} V${py(v - e)} M${x + bw / 2 - 4},${py(v + e)} h8 M${x + bw / 2 - 4},${py(v - e)} h8`} />}
+                  <text class="val" x={x + bw / 2} y={py(v + (e ?? 0)) - 5} text-anchor="middle">{fmt(v)}</text>
+                </g>
+              );
+            })}
+            {lines(g.label).map((ln, li) => (
+              <text class="cat" x={L + gi * gw + gw / 2} y={H - B + 18 + li * 14} text-anchor="middle">{ln}</text>
+            ))}
+          </g>
+        ))}
+        <line class="base" x1={L} x2={W - R} y1={py(0)} y2={py(0)} />
+      </svg>
+    </div>
+  </div>
+  {caption && <figcaption class="block-cap">{caption}</figcaption>}
+</figure>
+
+<style>
+  .block-body { padding: 12px 14px; }
+  .scroll { overflow-x: auto; }
+  .columns svg { display: block; width: 100%; height: auto; }
+  @media (max-width: 600px) { .columns svg { min-width: 520px; } }   /* phones: scroll, don't shrink */
+  .grid { stroke: var(--rule); stroke-width: 1; }
+  .base { stroke: var(--muted); stroke-width: 1; }
+  .tick, .cat { font: 11px var(--mono); fill: var(--muted); }
+  .cat { fill: var(--ink); }
+  .val { font: 9.5px var(--mono); fill: var(--ink); }
+  .err { stroke: var(--ink); stroke-width: 1.2; fill: none; opacity: .7; }
+  .b1 path:not(.err), .k1 { fill: var(--chart-4); background: var(--chart-4); }
+  .b2 path:not(.err), .k2 { fill: var(--chart-1); background: var(--chart-1); }
+  .b3 path:not(.err), .k3 { fill: var(--chart-2); background: var(--chart-2); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 8px; font: 11.5px var(--mono); color: var(--ink); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+</style>

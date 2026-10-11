@@ -1,0 +1,89 @@
+---
+// A line chart rendered at build time as SVG. Points sit on evenly spaced x categories.
+// Each series is labeled at its end and has its own dash pattern, so identity never rests
+// on color alone. Optional `ref` draws a dashed horizontal reference line.
+interface Series { label: string; values: number[]; }
+interface Props {
+  x: string[];
+  series: Series[];
+  yMin?: number;
+  yMax?: number;
+  yTicks?: number[];
+  unit?: string;
+  ref?: { value: number; label: string };
+  xTitle?: string;
+  title?: string;
+  caption?: string;
+}
+const { x, series, yMin = 0, yMax = 100, yTicks = [0, 25, 50, 75, 100], unit = '', ref, xTitle, title = 'Chart', caption } = Astro.props;
+
+const W = 640, H = 300, L = 44, R = 150, T = 16, B = xTitle ? 52 : 34;
+const px = (i: number) => L + (x.length === 1 ? 0 : (i / (x.length - 1)) * (W - L - R));
+const py = (v: number) => T + (1 - (v - yMin) / (yMax - yMin)) * (H - T - B);
+const dashes = ['', '7 4', '2 4', '10 3 2 3'];
+
+// end labels: sorted by last value, pushed apart so they never overlap
+const ends = series
+  .map((s, i) => ({ i, label: s.label, y: py(s.values[s.values.length - 1]) }))
+  .sort((a, b) => a.y - b.y);
+for (let k = 1; k < ends.length; k++) ends[k].y = Math.max(ends[k].y, ends[k - 1].y + 14);
+---
+<figure class="block line-chart">
+  <div class="block-head"><span>{title}</span></div>
+  <div class="block-body">
+    <svg class="plot" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={title}>
+      {yTicks.map((t) => (
+        <g>
+          <line class="grid" x1={L} x2={W - R} y1={py(t)} y2={py(t)} />
+          <text class="tick" x={L - 8} y={py(t) + 4} text-anchor="end">{t}{unit}</text>
+        </g>
+      ))}
+      {x.map((lab, i) => <text class="tick" x={px(i)} y={H - B + 18} text-anchor="middle">{lab}</text>)}
+      {xTitle && <text class="axis-title" x={(L + W - R) / 2} y={H - 8} text-anchor="middle">{xTitle}</text>}
+      {ref && (
+        <g>
+          <line class="ref" x1={L} x2={W - R} y1={py(ref.value)} y2={py(ref.value)} />
+          <text class="ref-label" x={W - R + 8} y={py(ref.value) + 4}>{ref.label}</text>
+        </g>
+      )}
+      {series.map((s, si) => (
+        <g class={`s s${si + 1}`}>
+          <polyline points={s.values.map((v, i) => `${px(i)},${py(v)}`).join(' ')} stroke-dasharray={dashes[si % 4]} />
+          {s.values.map((v, i) => (
+            <circle cx={px(i)} cy={py(v)} r="4"><title>{`${s.label} · ${x[i]}: ${v}${unit}`}</title></circle>
+          ))}
+        </g>
+      ))}
+      {ends.map((e) => (
+        <text class="end" x={W - R + 8} y={e.y + 4}>{e.label}</text>
+      ))}
+    </svg>
+    {series.length > 1 && (
+      <div class="legend">
+        {series.map((s, si) => (
+          <span><svg width="26" height="10"><line class={`key s${si + 1}`} x1="1" x2="25" y1="5" y2="5" stroke-dasharray={dashes[si % 4]} /></svg>{s.label}</span>
+        ))}
+      </div>
+    )}
+  </div>
+  {caption && <figcaption class="block-cap">{caption}</figcaption>}
+</figure>
+
+<style>
+  .line-chart svg.plot { display: block; width: 100%; height: auto; overflow: visible; }
+  .block-body { padding: 12px 14px; }
+  .grid { stroke: var(--rule); stroke-width: 1; }
+  .tick, .axis-title, .end, .ref-label { font: 11px var(--mono); fill: var(--muted); }
+  .end { fill: var(--ink); }
+  .ref { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 3; }
+  .s polyline { fill: none; stroke-width: 2; stroke-linejoin: round; }
+  .s circle { stroke: var(--surface); stroke-width: 2; }
+  .s1 polyline, .key.s1 { stroke: var(--chart-1); } .s1 circle { fill: var(--chart-1); }
+  .s2 polyline, .key.s2 { stroke: var(--chart-2); } .s2 circle { fill: var(--chart-2); }
+  .s3 polyline, .key.s3 { stroke: var(--chart-3); } .s3 circle { fill: var(--chart-3); }
+  .s4 polyline, .key.s4 { stroke: var(--chart-4); } .s4 circle { fill: var(--chart-4); }
+  .key { stroke-width: 2; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; font: 11.5px var(--mono); color: var(--ink); }
+  .legend svg { flex: none; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+</style>

@@ -1,0 +1,37 @@
+---
+// Top bar on every page: sections, outside profiles, then the mode toggle.
+import ModeToggle from './ModeToggle.astro';
+import { site } from '../data/site';
+
+const here = Astro.url.pathname;
+const sections = [
+  { label: 'home', href: '/' },
+  { label: 'articles', href: '/writing/' },
+  { label: 'projects', href: '/projects/' },
+  { label: 'cv', href: '/cv/' },
+];
+// Outside profiles; the RSS feed stays at /rss.xml but has no visible link.
+const elsewhere = site.links.filter((l) => l.label !== 'rss');
+---
+<header class="nav">
+  <div class="in">
+    <nav class="mono" aria-label="Site">
+      {sections.map((s) => (
+        <a href={s.href} aria-current={(s.href === '/' ? here === '/' : here.startsWith(s.href)) ? 'page' : undefined}>{s.label}</a>
+      ))}
+      <span class="sep" aria-hidden="true"></span>
+      {elsewhere.map((l) => <a href={l.href}>{l.label}</a>)}
+      <ModeToggle />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav { border-bottom: 1px solid var(--rule); background: var(--paper); }
+  .in { max-width: 900px; margin: 0 auto; padding: 14px 20px; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 8px 20px; }
+  nav { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; font-size: 13px; }
+  .sep { width: 1px; height: 14px; background: var(--rule); }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a:hover, nav a[aria-current='page'] { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  @media (max-width: 480px) { nav { gap: 6px 14px; max-width: 100%; } .sep { display: none; } }
+</style>

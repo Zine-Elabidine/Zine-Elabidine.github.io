@@ -3,7 +3,7 @@
 :root {
   --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
-  --measure: 640px;
+  --measure: 720px;
   color-scheme: light;
 }
 :root[data-mode='dark'] { color-scheme: dark; }
@@ -61,7 +61,7 @@ h1, h2, h3, h4 { text-wrap: pretty; font-weight: 600; line-height: 1.2; }
 :root[data-mode='dark'] .astro-code span { color: var(--shiki-dark); }
 .prose table { border-collapse: collapse; width: 100%; font: 14px var(--mono); }
 .prose .table-wrap, .prose table { display: block; overflow-x: auto; }
-.prose th { text-align: left; font-weight: 500; color: var(--muted); padding: 0 14px 6px 0; border-bottom: 1px solid var(--ink); white-space: nowrap; }
+.prose th { text-align: left; font-weight: 500; color: var(--muted); padding: 0 14px 6px 0; border-bottom: 1px solid var(--ink); }
 .prose td { padding: 6px 14px 6px 0; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
 .prose math[display='block'] { margin: 18px 0; font-size: 1.1em; overflow-x: auto; }
 .prose img { display: block; margin: 0 auto 18px; }

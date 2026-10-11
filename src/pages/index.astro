@@ -1,131 +1,38 @@
 ---
 import Base from '../layouts/Base.astro';
-import ModeToggle from '../components/ModeToggle.astro';
 import PostList from '../components/PostList.astro';
-import { site, projects } from '../data/site';
-import { getPosts, fmtDate, readingMinutes } from '../lib/posts';
+import { site } from '../data/site';
+import { getPosts } from '../lib/posts';
 
-const posts = await getPosts();
-const [latest, ...rest] = posts;
-const fig = latest?.data.feature;
-const figMax = fig ? Math.max(...fig.rows.map((r) => r.value)) * 1.08 : 1;
+// The homepage shows the newest few articles; the rest live under /writing/.
+const latest = (await getPosts()).slice(0, 3);
 ---
 <Base>
-  <div class="desk">
-    <aside class="id grid-bg">
-      <div class="id-inner">
-        <h1 class="nm">{site.name}</h1>
-        <p class="one">{site.tagline}</p>
-        <nav class="links mono" aria-label="Elsewhere">
-          {site.links.map((l) => <a href={l.href}>{l.label}</a>)}
-        </nav>
-        <section class="now" aria-labelledby="now-h">
-          <p class="lbl" id="now-h">Now · {site.now.updated}</p>
-          <ul>{site.now.items.map((i) => <li>{i}</li>)}</ul>
-        </section>
-        <div class="foot mono"><span>{site.location}</span><ModeToggle /></div>
-      </div>
-    </aside>
+  <main class="home">
+    <section class="about">
+      <h1 class="nm"><span class="nw">{site.name.split(' ')[0]}</span><br />{site.name.split(' ').slice(1).join(' ')}</h1>
+      <div class="txt">{site.about.map((para) => <p>{para}</p>)}</div>
+    </section>
 
-    <main class="main">
-      {latest ? (
-        <section>
-          <p class="lbl">Latest · {fmtDate(latest.data.date)}</p>
-          <article class={`feat ${fig ? '' : 'solo'}`}>
-            <div>
-              <h2><a href={`/writing/${latest.id}/`}>{latest.data.title}</a></h2>
-              <p>{latest.data.summary}</p>
-              <a class="go mono" href={`/writing/${latest.id}/`}>read · {readingMinutes(latest.body)} min →</a>
-            </div>
-            {fig && (
-              <figure>
-                <div class="bars">
-                  {fig.rows.map((r) => (
-                    <div class={`bar ${r.label === fig.highlight ? 'hi' : ''}`}>
-                      <span class="l">{r.label}</span>
-                      <span class="t"><span style={`width:${(r.value / figMax) * 100}%`} /></span>
-                      <span class="v">{r.value.toFixed(1)}</span>
-                    </div>
-                  ))}
-                </div>
-                <figcaption class="mono">{fig.caption}</figcaption>
-              </figure>
-            )}
-          </article>
-        </section>
-      ) : (
-        <section>
-          <p class="lbl">Writing</p>
-          <p class="empty">The first post is on its way.</p>
-        </section>
-      )}
-
-      {rest.length > 0 && (
-        <section>
-          <p class="lbl">Writing</p>
-          <PostList posts={rest} />
-        </section>
-      )}
-
+    {latest.length > 0 && (
       <section>
-        <p class="lbl">Projects</p>
-        <div class="tw">
-          <table class="pj">
-            <thead><tr><th>Name</th><th>What</th><th class="r">Result</th></tr></thead>
-            <tbody>
-              {projects.map((p) => (
-                <tr><td><a href={p.href}>{p.name}</a></td><td class="desc">{p.what}</td><td class="r">{p.result}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <p class="lbl">Latest</p>
+        <PostList posts={latest} />
+        <a class="go mono" href="/writing/">all articles →</a>
       </section>
-    </main>
-  </div>
+    )}
+  </main>
 </Base>
 
 <style>
-  .desk { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 100vh; }
-  .id { border-right: 1px solid var(--rule); }
-  .id-inner { position: sticky; top: 0; padding: 40px 28px; display: grid; gap: 0; }
-  .nm { font-size: 32px; line-height: 1.12; margin: 0; letter-spacing: -0.01em; }
-  .one { margin: 10px 0 0; color: var(--muted); font-style: italic; }
-  .links { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; margin-top: 16px; }
-  .now { border: 1px solid var(--rule); padding: 14px 16px; background: var(--surface); margin-top: 28px; }
-  .now ul { margin: 0; padding-left: 18px; font-size: 16px; }
-  .foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 28px; font-size: 12px; color: var(--muted); }
-
-  .main { padding: 40px clamp(20px, 4vw, 48px) 64px; display: grid; gap: 40px; align-content: start; max-width: 900px; }
-  .feat { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 24px; padding: 20px; border: 1px solid var(--rule); background: var(--surface); }
-  .feat.solo { grid-template-columns: 1fr; }
-  .feat h2 { font-size: 27px; line-height: 1.18; margin: 0 0 10px; }
-  .feat h2 a { color: var(--ink); text-decoration: none; }
-  .feat h2 a:hover { text-decoration: underline; }
-  .feat p { margin: 0 0 12px; color: var(--muted); font-size: 16.5px; }
-  .go { font-size: 13px; }
-  figure { margin: 0; align-self: center; }
-  .bars { display: grid; gap: 7px; }
-  .bar { display: grid; grid-template-columns: minmax(80px, 128px) 1fr 38px; gap: 8px; align-items: center; font: 12px var(--mono); }
-  .bar .t { height: 12px; background: var(--code-bg); }
-  .bar .t span { display: block; height: 100%; background: var(--chart-4); }
-  .bar.hi .t span { background: var(--chart-1); }
-  .bar .v { text-align: right; font-variant-numeric: tabular-nums; }
-  figcaption { font-size: 11px; color: var(--muted); margin-top: 8px; }
-  .empty { color: var(--muted); font-style: italic; margin: 0; }
-
-  .tw { overflow-x: auto; }
-  .pj { border-collapse: collapse; width: 100%; font: 14px var(--mono); }
-  .pj th { text-align: left; font-weight: 500; color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 0 14px 6px 0; border-bottom: 1px solid var(--ink); }
-  .pj td { padding: 9px 14px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  .pj td:first-child { white-space: nowrap; }
-  .pj .desc { font: 16px var(--serif); }
-  .pj .r { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-
-  @media (max-width: 980px) { .feat { grid-template-columns: 1fr; } }
-  @media (max-width: 760px) {
-    .desk { grid-template-columns: 1fr; }
-    .id { border-right: 0; border-bottom: 1px solid var(--rule); }
-    .id-inner { position: static; padding: 28px 20px; }
-    .main { padding: 28px 20px 48px; }
-  }
+  /* Fill the screen under the navbar and center the content vertically while there is little of it. */
+  .home { max-width: 900px; min-height: calc(100vh - 50px); margin: 0 auto; padding: 72px 20px; display: grid; gap: 64px; align-content: center; }
+  /* Name and about side by side; they stack on narrow screens. */
+  .about { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 44px; align-items: center; }
+  .nm { font-size: clamp(42px, 6vw, 60px); line-height: 1.02; letter-spacing: -0.02em; margin: 0; }
+  .nw { white-space: nowrap; }
+  .txt p { margin: 0 0 12px; font-size: 18px; }
+  .txt p:last-child { margin-bottom: 0; }
+  @media (max-width: 700px) { .about { grid-template-columns: 1fr; gap: 18px; } }
+  .go { display: inline-block; margin-top: 12px; font-size: 13px; }
 </style>

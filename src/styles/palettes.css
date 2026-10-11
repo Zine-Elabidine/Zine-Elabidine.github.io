@@ -247,12 +247,12 @@
   --surface: #ffffff;
   --ink: #14213d;
   --muted: #58617a;
-  --accent: #80600f;
+  --accent: #946d12;   /* gold, as bright as link text can go and stay readable (4.5:1) */
   --rule: #dadde3;
   --grid: rgba(20,33,61,.06);
   --code-bg: #eff1f5;
   --highlight: #f3e6c4;
-  --callout: #80600f;
+  --callout: #946d12;
   --callout-bg: #f8f1de;
   --chart-1: #14213d;
   --chart-2: #b88a2a;

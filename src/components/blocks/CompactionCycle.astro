@@ -1,0 +1,183 @@
+---
+// Animated diagram of age-tiered compaction: the window fills, old tool outputs are cleared
+// at 50%, the oldest part is summarized at 75%, and recall brings an exact detail back from
+// the full log. Blocks are absolutely positioned divs (in % of the stage) with CSS
+// transitions. Plays on its own until a tab is clicked; reduced motion shows end states.
+interface Props { title?: string; }
+const { title = 'One session, four stages' } = Astro.props;
+const N = 14;
+const LOG = ['msg', 'tool', 'msg', 'tool', 'dec', 'tool', 'msg', 'tool', 'msg', 'tool', 'tool', 'msg', 'tool', 'tool', 'msg', 'tool'];
+---
+<figure class="block cycle">
+  <div class="block-head">
+    <span>{title}</span>
+    <span class="seg" role="tablist" aria-label="Stage">
+      <button type="button" data-m="0" aria-pressed="true">fill</button>
+      <button type="button" data-m="1" aria-pressed="false">clear</button>
+      <button type="button" data-m="2" aria-pressed="false">summarize</button>
+      <button type="button" data-m="3" aria-pressed="false">recall</button>
+    </span>
+  </div>
+  <div class="block-body">
+    <div class="stage">
+      <div class="zone z-log"><span>full session log, on disk</span>
+        {LOG.map((k, i) => <i class={`line ${k}`} style={`top:${4 + i * 6}%; width:${k === 'tool' ? 84 : 46}%`} data-l={i}></i>)}
+      </div>
+      <div class="zone z-win"><span>what the model is sent</span></div>
+      <div class="gauge">
+        <i class="fill"></i>
+        <em class="l" style="left:50%">clear 50%</em><em class="r" style="left:75%">75% summarize</em>
+        <b></b>
+      </div>
+      {Array.from({ length: N }, (_, i) => <div class="blk" data-b={i}></div>)}
+      <div class="note-box"><span>the summary holds</span>
+        <ol>
+          <li>handoff note: goal, done, decisions, <strong>rejected approaches</strong>, next steps</li>
+          <li>your messages, copied word for word</li>
+          <li>the agent's notes, copied word for word</li>
+          <li>the files it changed</li>
+        </ol>
+      </div>
+    </div>
+    <p class="cap" aria-live="polite"></p>
+    <div class="legend">
+      <span><i class="tool"></i>tool output</span>
+      <span><i class="ph"></i>cleared output (one line)</span>
+      <span><i class="msg"></i>message</span>
+      <span><i class="dec"></i>agent's note</span>
+      <span><i class="sum"></i>summary / recalled lines</span>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .block-body { padding: 12px 14px; }
+  .stage { position: relative; aspect-ratio: 640 / 300; }
+  .zone { position: absolute; border: 1px dashed var(--rule); }
+  .zone > span, .note-box > span { position: absolute; top: -18px; left: 0; font: 11px var(--mono); color: var(--muted); white-space: nowrap; }
+  .z-log { left: 2%; top: 9%; width: 24%; height: 79%; }
+  .z-win { left: 35%; top: 9%; width: 30%; height: 79%; border: 1.5px solid var(--ink); }
+  .z-win > span { color: var(--ink); }
+  .line { position: absolute; left: 8%; height: 3%; border-radius: 1px; opacity: .55; transition: opacity .4s, box-shadow .4s; }
+  .line.hit { opacity: 1; box-shadow: 0 0 0 2px var(--chart-1); }
+  .gauge { position: absolute; left: 35%; width: 30%; top: 92%; height: 5px; background: var(--rule); }
+  .gauge .fill { display: block; height: 100%; width: 0; background: var(--ink); transition: width .9s ease; }
+  .gauge em { position: absolute; top: -3px; height: 11px; border-left: 1.5px solid var(--muted); font: normal 9.5px var(--mono); color: var(--muted); padding: 12px 0 0 0; white-space: nowrap; }
+  .gauge em.l { transform: translateX(-100%); border-left: 0; border-right: 1.5px solid var(--muted); padding-right: 4px; }
+  .gauge em.r { padding-left: 4px; }
+  .gauge b { position: absolute; right: -2px; top: -18px; font: 500 10.5px var(--mono); color: var(--ink); transform: translateX(100%); padding-left: 8px; }
+  .blk { position: absolute; border-radius: 2px; opacity: 0; box-shadow: 0 0 0 1px var(--surface);
+         transition: left .9s cubic-bezier(.4,0,.2,1), top .9s cubic-bezier(.4,0,.2,1),
+                     width .9s cubic-bezier(.4,0,.2,1), height .9s cubic-bezier(.4,0,.2,1),
+                     opacity .6s, background-color .6s; }
+  .stage.jump .blk, .stage.jump .gauge .fill { transition: none; }
+  .tool { background: var(--chart-4); }
+  .ph { background: var(--chart-4); opacity: .55; }
+  .blk.ph { opacity: 1; background: transparent; box-shadow: inset 0 0 0 1px var(--chart-4); }
+  .msg { background: var(--chart-3); }
+  .dec { background: var(--chart-2); }
+  .sum { background: var(--chart-1); }
+  .note-box { position: absolute; left: 71%; top: 9%; width: 28%; font: 10.5px/1.45 var(--mono); color: var(--ink);
+              opacity: 0; transition: opacity .6s; }
+  .note-box.on { opacity: 1; }
+  .note-box ol { margin: 0; padding-left: 16px; }
+  .note-box li { margin-bottom: 4px; }
+  .cap { font: 13px/1.5 var(--mono); color: var(--ink); margin: 26px 0 8px; min-height: 4.5em; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font: 11.5px var(--mono); color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 14px; height: 8px; border-radius: 2px; display: inline-block; opacity: 1; }
+  .legend i.ph { background: transparent; box-shadow: inset 0 0 0 1px var(--chart-4); }
+  .seg { display: inline-flex; border: 1px solid var(--rule); text-transform: none; letter-spacing: 0; }
+  .seg button { font: 11px var(--mono); background: none; border: 0; padding: 3px 8px; color: var(--muted); cursor: pointer; }
+  .seg button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+  @media (max-width: 620px) {
+    .stage { aspect-ratio: 640 / 330; }
+    .zone > span, .note-box > span { font-size: 9px; top: -14px; }
+    .note-box { font-size: 8.5px; }
+    .gauge em { font-size: 8px; }
+    .cap { font-size: 12px; }
+  }
+</style>
+
+<script>
+  // one block in the window: id, kind, height (% of the stage)
+  type Item = [number, string, number];
+  type State = { items: Item[]; hit?: number; box?: boolean; from?: Record<number, [number, number]> };
+  type Stage = { before: State; after: State; text: string };
+
+  const TOP = 12, CAP = 73, GAP = 0.9, X = 37, W = 26;
+  const T = 8, M = 3.2, U = 3.6, P = 2;   // heights: tool output, agent message, user message, cleared
+
+  const fill1: Item[] = [[0, 'msg', U], [1, 'tool', T], [2, 'msg', M], [3, 'tool', T], [4, 'dec', 2.4], [5, 'tool', T], [6, 'msg', U]];
+  const cleared: Item[] = [[0, 'msg', U], [1, 'ph', P], [2, 'msg', M], [3, 'ph', P], [4, 'dec', 2.4], [5, 'tool', T], [6, 'msg', U]];
+  const full: Item[] = [...cleared, [7, 'tool', T], [8, 'msg', M], [9, 'tool', T], [11, 'msg', M]];
+  const summarized: Item[] = [[12, 'sum', 6], [7, 'tool', T], [8, 'msg', M], [9, 'tool', T], [11, 'msg', M]];
+
+  const STAGES: Stage[] = [
+    { text: 'Fill: every step adds to what the model is sent. Tool outputs are most of it (61% of the tokens in my sessions). The log on disk keeps a full copy of everything.',
+      before: { items: fill1.slice(0, 3) }, after: { items: fill1 } },
+    { text: 'Clear, at 50%: older tool outputs become one line ("read api.py, 212 lines. Run it again if you need it."). The newest outputs and the latest step stay word for word.',
+      before: { items: fill1 }, after: { items: cleared } },
+    { text: 'Summarize, at 75% or 200k tokens: everything before the cut becomes one summary. The recent steps stay word for word, and the window lands near 40%.',
+      before: { items: full }, after: { items: summarized, box: true } },
+    { text: 'Recall: nothing was deleted. When the agent needs an exact detail, it searches the full log and gets the matching lines back, instead of guessing.',
+      before: { items: summarized }, after: { items: [...summarized, [13, 'sum', 2.2]], hit: 3, from: { 13: [8, 4 + 3 * 6] } } },
+  ];
+
+  for (const fig of document.querySelectorAll<HTMLElement>('.cycle')) {
+    const stage = fig.querySelector<HTMLElement>('.stage')!;
+    const blocks = [...fig.querySelectorAll<HTMLElement>('.blk')];
+    const lines = [...fig.querySelectorAll<HTMLElement>('.line')];
+    const gauge = fig.querySelector<HTMLElement>('.gauge .fill')!;
+    const pct = fig.querySelector<HTMLElement>('.gauge b')!;
+    const box = fig.querySelector<HTMLElement>('.note-box')!;
+    const cap = fig.querySelector<HTMLElement>('.cap')!;
+    const tabs = [...fig.querySelectorAll<HTMLButtonElement>('.seg button')];
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let auto = !reduced, timers: number[] = [];
+
+    const place = (el: HTMLElement, x: number, y: number, w: number, h: number, o: number) =>
+      Object.assign(el.style, { left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%`, opacity: String(o) });
+
+    const apply = (s: State, from = false) => {
+      const at: Record<number, [number, number, string]> = {};
+      let y = TOP;
+      for (const [id, kind, h] of s.items) { at[id] = [y, h, kind]; y += h + GAP; }
+      blocks.forEach((el, i) => {
+        const p = at[i];
+        if (!p) {
+          // gone: fold into the summary's slot when there is one, else fade where it was
+          if (at[12]) place(el, X, TOP, W, 6, 0); else el.style.opacity = '0';
+          return;
+        }
+        el.className = `blk ${p[2]}`;
+        const start = from ? s.from?.[i] : undefined;
+        if (start) place(el, start[0], start[1], 20, 2.2, 1);
+        else place(el, X, p[0], W, p[1], 1);
+      });
+      const used = Math.round(((y - GAP - TOP) / CAP) * 100);
+      gauge.style.width = `${Math.min(used, 100)}%`;
+      pct.textContent = `${used}%`;
+      box.classList.toggle('on', !!s.box);
+      lines.forEach((l, i) => l.classList.toggle('hit', s.hit === i));
+    };
+
+    const play = (m: number) => {
+      timers.forEach(clearTimeout); timers = [];
+      tabs.forEach((t, i) => t.setAttribute('aria-pressed', String(i === m)));
+      cap.textContent = STAGES[m].text;
+      const { before, after } = STAGES[m];
+      if (reduced) { apply(after); return; }
+      stage.classList.add('jump');
+      apply(before);
+      if (after.from) apply({ ...after, items: before.items.concat(after.items.filter(([id]) => after.from![id])) }, true);
+      void stage.offsetWidth;            // commit the starting positions without animating
+      stage.classList.remove('jump');
+      timers.push(window.setTimeout(() => apply(after), 1600));
+      if (auto) timers.push(window.setTimeout(() => play((m + 1) % STAGES.length), 7000));
+    };
+
+    tabs.forEach((t, i) => t.addEventListener('click', () => { auto = false; play(i); }));
+    play(0);
+  }
+</script>

@@ -1,0 +1,30 @@
+---
+// Local preview only (never built into the site): a picker to try the palettes in palettes.css.
+const palettes = ['graphite', 'ink', 'navy', 'blueprint', 'petrol', 'teal', 'forest', 'olive', 'mono-amber', 'oxblood', 'plum', 'slate-rose', 'majorelle', 'chefchaouen'];
+---
+{import.meta.env.DEV && (
+  <label class="try mono">
+    palette
+    <select>{palettes.map((p) => <option value={p}>{p}</option>)}</select>
+  </label>
+)}
+
+<style>
+  .try { position: fixed; left: 12px; bottom: 12px; z-index: 50; display: flex; gap: 6px; align-items: center; font-size: 12px; padding: 6px 8px; background: var(--surface); border: 1px solid var(--rule); color: var(--muted); }
+  select { font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); }
+</style>
+
+<script>
+  const sel = document.querySelector<HTMLSelectElement>('.try select');
+  if (sel) {
+    const root = document.documentElement;
+    let saved: string | null = null;
+    try { saved = localStorage.getItem('try-palette'); } catch {}
+    if (saved) root.dataset.palette = saved;
+    sel.value = root.dataset.palette ?? 'graphite';
+    sel.addEventListener('change', () => {
+      root.dataset.palette = sel.value;
+      try { localStorage.setItem('try-palette', sel.value); } catch {}
+    });
+  }
+</script>

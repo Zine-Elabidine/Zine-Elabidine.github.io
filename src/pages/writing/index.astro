@@ -1,22 +1,18 @@
 ---
 import Base from '../../layouts/Base.astro';
-import ModeToggle from '../../components/ModeToggle.astro';
 import PostList from '../../components/PostList.astro';
 import { getPosts } from '../../lib/posts';
 const posts = await getPosts();
 ---
 <Base title="Writing">
   <main class="wrap">
-    <div class="crumb mono"><span><a href="/">zine</a> / writing</span><ModeToggle /></div>
-    <h1>Writing</h1>
+    <h1>Articles</h1>
     {posts.length ? <PostList posts={posts} /> : <p class="empty">The first post is on its way.</p>}
   </main>
 </Base>
 
 <style>
   .wrap { max-width: 760px; margin: 0 auto; padding: 36px 20px 64px; }
-  .crumb { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
-  .crumb a { color: var(--muted); text-decoration: none; }
-  h1 { font-size: 32px; margin: 18px 0 20px; }
+  h1 { font-size: 32px; margin: 6px 0 20px; }
   .empty { color: var(--muted); font-style: italic; }
 </style>

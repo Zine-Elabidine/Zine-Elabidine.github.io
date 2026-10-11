@@ -1,0 +1,56 @@
+---
+// Horizontal 100% bars split into parts (e.g. correct / invented / unsure), one bar per row.
+// Each part shows its count when it's wide enough, and a legend names the parts, so the
+// split never rests on color alone. `highlight` rows get a bold label.
+interface Row { label: string; values: number[]; }
+interface Props {
+  parts: string[];
+  rows: Row[];
+  highlight?: string[];
+  title?: string;
+  caption?: string;
+}
+const { parts, rows, highlight = [], title = 'Chart', caption } = Astro.props;
+---
+<figure class="block stacked">
+  <div class="block-head"><span>{title}</span></div>
+  <div class="block-body">
+    <div class="legend">
+      {parts.map((p, i) => <span><i class={`p${i + 1}`}></i>{p}</span>)}
+    </div>
+    {rows.map((r) => {
+      const total = r.values.reduce((a, b) => a + b, 0) || 1;
+      return (
+        <div class={`row ${highlight.includes(r.label) ? 'hi' : ''}`}>
+          <span class="l">{r.label}</span>
+          <span class="bar">
+            {r.values.map((v, i) => v > 0 && (
+              <span class={`seg p${i + 1}`} style={`width:${(v / total) * 100}%`} title={`${r.label} · ${parts[i]}: ${v} of ${total}`}>
+                {v / total >= 0.08 ? v : ''}
+              </span>
+            ))}
+          </span>
+        </div>
+      );
+    })}
+  </div>
+  {caption && <figcaption class="block-cap">{caption}</figcaption>}
+</figure>
+
+<style>
+  .block-body { padding: 12px 14px; display: grid; gap: 7px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 6px; font: 11.5px var(--mono); color: var(--ink); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 10px; align-items: center; font: 12px var(--mono); color: var(--ink); }
+  .row.hi .l { font-weight: 600; }
+  .bar { display: flex; height: 20px; gap: 2px; }
+  .seg { display: flex; align-items: center; justify-content: center; font: 500 11px var(--mono); color: var(--paper); min-width: 0; overflow: hidden; }
+  .seg:first-child { border-radius: 2px 0 0 2px; }
+  .seg:last-child { border-radius: 0 2px 2px 0; }
+  .p1 { background: var(--chart-1); }
+  .p2 { background: var(--chart-2); }
+  .p3 { background: var(--chart-4); }
+  .seg.p3 { color: var(--ink); }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 3px; } }
+</style>

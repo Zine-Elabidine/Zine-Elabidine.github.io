@@ -1,6 +1,5 @@
 ---
 import Base from './Base.astro';
-import ModeToggle from '../components/ModeToggle.astro';
 import SectionRuler from '../components/SectionRuler.astro';
 import { fmtDate, readingMinutes, type Post } from '../lib/posts';
 
@@ -8,15 +7,11 @@ interface Props { post: Post; headings: { depth: number; slug: string; text: str
 const { post, headings } = Astro.props;
 const { title, summary, date, tags, draft } = post.data;
 ---
-<Base title={title} description={summary}>
+<Base title={title} description={summary} image={`/og/${post.id}.png`}>
   <div class="page grid-bg">
     <SectionRuler headings={headings} />
     <article class="col">
       <header>
-        <div class="crumb mono">
-          <span><a href="/">zine</a> / <a href="/writing/">writing</a> / {post.id}</span>
-          <ModeToggle />
-        </div>
         <h1>{title}</h1>
         <p class="meta mono">
           {fmtDate(date)} · {readingMinutes(post.body)} min{tags.length > 0 && ` · ${tags.join(', ')}`}
@@ -24,7 +19,7 @@ const { title, summary, date, tags, draft } = post.data;
         </p>
       </header>
       <div class="prose"><slot /></div>
-      <footer class="end mono"><a href="/writing/">← all writing</a><a href="/">home</a></footer>
+      <footer class="end mono"><a href="/writing/">← all articles</a><a href="/">home</a></footer>
     </article>
     <div class="margin" aria-hidden="true"></div>
   </div>
@@ -33,10 +28,8 @@ const { title, summary, date, tags, draft } = post.data;
 <style>
   .page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, var(--measure)) minmax(0, 1fr); min-height: 100vh; }
   .col { background: var(--paper); border-inline: 1px solid var(--rule); padding: 36px 32px 72px; min-width: 0; counter-reset: sidenote; }
-  .crumb { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; color: var(--muted); margin-bottom: 22px; }
-  .crumb a { color: var(--muted); text-decoration: none; }
-  .crumb a:hover { color: var(--ink); text-decoration: underline; }
   h1 { font-size: clamp(28px, 4vw, 34px); line-height: 1.15; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .prose { font-size: 19px; }
   .meta { font-size: 12px; color: var(--muted); margin: 0 0 30px; }
   .draft { color: var(--callout); }
   .end { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 13px; }
