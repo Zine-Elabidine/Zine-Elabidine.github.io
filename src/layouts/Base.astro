@@ -30,6 +30,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {/* Visitor counts (GoatCounter: no cookies, dashboard private to him). Off in local preview so his own visits don't count. */}
+    {import.meta.env.PROD && (
+      <script is:inline async data-goatcounter="https://zine-elabidine.goatcounter.com/count" src="https://gc.zgo.at/count.js"></script>
+    )}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

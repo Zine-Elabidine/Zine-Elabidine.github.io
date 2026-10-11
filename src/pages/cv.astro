@@ -15,7 +15,7 @@ const md = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace
         <a href={`mailto:${cv.email}`}>{cv.email}</a>
         {site.links.filter((l) => l.label !== 'rss' && l.label !== 'cv').map((l) => <a href={l.href}>{l.label}</a>)}
       </p>
-      <a class="dl mono" href={cv.pdf} download>↓ download CV (PDF)</a>
+      <a class="dl mono" href={cv.pdf} download data-goatcounter-click="cv-download" data-goatcounter-title="CV PDF downloaded">↓ download CV (PDF)</a>
     </header>
 
     <section>
